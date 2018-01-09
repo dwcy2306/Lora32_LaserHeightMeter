@@ -53,69 +53,77 @@ void setup() {
     case 0:
       Serial.println("MPU-Sensor missing");
       u8x8.clear();
-      u8x8.drawString(0, 0, "MPU-Sensor");
-      u8x8.drawString(0, 1, "missing");
+      u8x8.drawString(0, 1, "MPU-Sensor");
+      u8x8.drawString(0, 2, "missing");
       while(1);
     case 1:
       Serial.println("Found unknown Sensor.");
       u8x8.clear();
-      u8x8.drawString(0, 0, "Found unknown");
-      u8x8.drawString(0, 1, "sensor");
+      u8x8.drawString(0, 1, "Found unknown");
+      u8x8.drawString(0, 2, "sensor");
       break;
     case 2:
       Serial.println("MPU6500 found.");
       u8x8.clear();
-      u8x8.drawString(0, 0, "Found MPU-6500");
+      u8x8.drawString(0, 1, "Found MPU-6500");
       break;
     case 3:
       Serial.println("MPU9250 found!");
       u8x8.clear();
-      u8x8.drawString(0, 0, "Found MPU-9250");
+      u8x8.drawString(0, 1, "Found MPU-9250");
       break;
   }
-
+  
+  u8x8.clear();
   Serial.print("VL53L0X init...")
+  u8x8.drawString(0, 0, "VL53L0X init...");
   if(LaserSen.init()){
     Serial.println("success");
-    /*
-    u8x8.clear();
-    u8x8.drawString(0,0, "
-    */
+    u8x8.drawString(0, 1, "success");
   }
-  else Serial.println("failed");
+  else {
+    Serial.println("fail");
+    u8x8.drawString(0, 1, "fail");
+    break;
+  }
   
   LaserSen.setTimeout(500);
 
   //finish
   u8x8.clear();
+  
+  u8x8.drawString(0, 0, "View sensors\'");
+  u8x8.drawString(0, 1, "results on serial");
+  u8x8.drawString(0, 2, "monitor");
 }
 
 void loop() {
   static float xyz_GyrAccMag[9];
   char laser_Value[6];
-    mpu9250.getMeasurement(xyz_GyrAccMag);
+  
+  mpu9250.getMeasurement(xyz_GyrAccMag);
 
-    Serial.print("XYZ ACC g[");
-    Serial.print(xyz_GyrAccMag[0],2);
-    Serial.print(";");
-    Serial.print(xyz_GyrAccMag[1],2);
-    Serial.print(";");
-    Serial.print(xyz_GyrAccMag[2],2);
-    Serial.print("]");
+  Serial.print("XYZ ACC g[");
+  Serial.print(xyz_GyrAccMag[0],2);
+  Serial.print(";");
+  Serial.print(xyz_GyrAccMag[1],2);
+  Serial.print(";");
+  Serial.print(xyz_GyrAccMag[2],2);
+  Serial.print("]");
 
-    Serial.print(" \t GYR dps[");
-    Serial.print(xyz_GyrAccMag[4],2);
-    Serial.print(";");
-    Serial.print(xyz_GyrAccMag[5],2);
-    Serial.print(";");
-    Serial.print(xyz_GyrAccMag[6],2);
-    Serial.print("]");
+  Serial.print(" \t GYR dps[");
+  Serial.print(xyz_GyrAccMag[4],2);
+  Serial.print(";");
+  Serial.print(xyz_GyrAccMag[5],2);
+  Serial.print(";");
+  Serial.print(xyz_GyrAccMag[6],2);
+  Serial.print("]");
 
-    Serial.print(" \t T: ");
-    Serial.print(xyz_GyrAccMag[3],2);
-    Serial.print(" C");
+  Serial.print(" \t T: ");
+  Serial.print(xyz_GyrAccMag[3],2);
+  Serial.print(" C");
 
-    Serial.println("");
+  Serial.println("");
 
   sprintf(laser_Value, "%d", LaserSen.readRangeSingleMillimeters());
   u8x8.clearLine(0);
@@ -128,5 +136,5 @@ void loop() {
   if (sensor.timeoutOccurred()) { Serial.print(" TIMEOUT"); }
   Serial.println();
    
-    delay(20);
+  delay(20);
 }
