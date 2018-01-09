@@ -33,8 +33,11 @@ void setup() {
   delay(1000);
 
   u8x8.begin();
+  u8x8.setFont(u8x8_font_artossans8_r);
+  u8x8.draw2x2String(1, 3, "PowerOn");
+  delay(1000);
+  u8x8.clear();
   u8x8.setFont(u8x8_font_victoriamedium8_r);
-
   if (!LoRa.begin(BAND)) {
     Serial.println("Starting LoRa failed!");
     u8x8.drawString(0, 1, "Starting LoRa failed!");
@@ -46,15 +49,39 @@ void setup() {
   Serial.print("Probe MPU9250: ");
   switch (mpu9250.initialize())
   {
-    case 0: Serial.println("MPU-Sensor missing"); while(1) {};
-    case 1: Serial.println("Found unknown Sensor."); break;
-    case 2: Serial.println("MPU6500 found."); break;
-    case 3: Serial.println("MPU9250 found!"); break;
+    case 0:
+      Serial.println("MPU-Sensor missing");
+      u8x8.clear();
+      u8x8.drawString(0, 0, "MPU-Sensor");
+      u8x8.drawString(0, 1, "missing");
+      while(1);
+    case 1:
+      Serial.println("Found unknown Sensor.");
+      u8x8.clear();
+      u8x8.drawString(0, 0, "Found unknown");
+      u8x8.drawString(0, 1, "sensor");
+      break;
+    case 2:
+      Serial.println("MPU6500 found.");
+      u8x8.clear();
+      u8x8.drawString(0, 0, "Found MPU-6500");
+      break;
+    case 3:
+      Serial.println("MPU9250 found!");
+      u8x8.clear();
+      u8x8.drawString(0, 0, "Found MPU-9250");
+      break;
   }
 
   Serial.print("Probe AK8963: ");
-  if (i2c.probe(0x0C)) Serial.println("AK8963 found!");
-  else                 Serial.println("AK8963 missing");
+  if (i2c.probe(0x0C)) {
+    Serial.println("AK8963 found!");
+    u8x8.drawString(0, 2, "Found AK8963");
+  }
+  else {
+    Serial.println("AK8963 missing");
+    u8x8.drawString(0, 2, "AK8963 missing");
+  }
 
   //finish
   u8x8.clear();
