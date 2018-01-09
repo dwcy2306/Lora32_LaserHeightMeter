@@ -24,13 +24,7 @@ char buf[11];
 // the OLED used
 U8X8_SSD1306_128X64_NONAME_SW_I2C u8x8(/* clock=*/ 15, /* data=*/ 4, /* reset=*/ 16);
 
-//#define BMP_SCK 5
-//#define BMP_MISO 19
-//#define BMP_MOSI 27 
-//#define BMP_CS 18
 Adafruit_BMP280 bme; // I2C
-//Adafruit_BMP280 bme(BMP_CS); // hardware SPI
-//Adafruit_BMP280 bme(BMP_CS, BMP_MOSI, BMP_MISO,  BMP_SCK);
 
 void setup() {
   SPI.begin(5, 19, 27, 18);
