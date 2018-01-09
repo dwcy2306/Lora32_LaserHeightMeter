@@ -33,6 +33,10 @@ void setup() {
   delay(1000);
 
   u8x8.begin();
+  u8x8.setFont(u8x8_font_artossans8_r);
+  u8x8.draw2x2String(1, 3, "PowerOn");
+  delay(1000);
+  u8x8.clear();
   u8x8.setFont(u8x8_font_victoriamedium8_r);
   if (!LoRa.begin(BAND)) {
     Serial.println("Starting LoRa failed!");
@@ -112,4 +116,3 @@ void loop() {
     Serial.println("");
     delay(20);
 }
-
