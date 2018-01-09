@@ -6,6 +6,8 @@
 String receivedText;
 String receivedRssi;
 
+char sensorVal[6];
+
 VL53L0X sensor;
 
 // WIFI_LoRa_32 ports
@@ -32,12 +34,6 @@ void setup() {
   while (!Serial); //Wait until the computer connected
   delay(1000);
 
-  // Initialize Sensor
-  Wire.begin();
-  sensor.init();
-  sensor.setTimeout(500);
-  sensor.setMeasurementTimingBudget(200000);  // High accuracy mode
-
   u8x8.begin();
   u8x8.setFont(u8x8_font_victoriamedium8_r);
 
@@ -48,9 +44,14 @@ void setup() {
   }
   u8x8.drawString(2, 0, "Laser Sensor");
   u8x8.drawString(0, 2, "Value:");
+
+  // Initialize Sensor
+  Wire.begin();
+  sensor.init();
+  sensor.setTimeout(500);
+  sensor.setMeasurementTimingBudget(200000);  // High accuracy mode
 }
 
-char sensorVal[6];
 void loop() {
   itoa(sensor.readRangeSingleMillimeters(), sensorVal, 10);  // change sensor value into string
   
