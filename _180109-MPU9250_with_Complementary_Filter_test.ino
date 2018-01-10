@@ -89,44 +89,41 @@ void setup() {
 }
 
 void loop() {
-  static float xyz_GyrAccMag[9];
+  static float xyz_GyrAccMag[9];  // 0, 1, 2 = Acc, 3 = Mag, 4, 5, 6 = Gyr
   float angles[3], prevAngles[3];
 
   mpu9250.getMeasurement(xyz_GyrAccMag);
 
   // Raw data
-  Serial.print("XYZ ACC g[");
-  Serial.print(xyz_GyrAccMag[0],2);
-  Serial.print(";");
-  Serial.print(xyz_GyrAccMag[1],2);
-  Serial.print(";");
-  Serial.print(xyz_GyrAccMag[2],2);
-  Serial.print("]");
+  Serial.print(xyz_GyrAccMag[0]);  // Acc
+  Serial.print(",");
+  Serial.print(xyz_GyrAccMag[1]);
+  Serial.print(",");
+  Serial.print(xyz_GyrAccMag[2]);
+  Serial.print(",");
 
-  Serial.print(" \t GYR dps[");
-  Serial.print(xyz_GyrAccMag[4],2);
-  Serial.print(";");
-  Serial.print(xyz_GyrAccMag[5],2);
-  Serial.print(";");
-  Serial.print(xyz_GyrAccMag[6],2);
-  Serial.print("]");
+  Serial.print(xyz_GyrAccMag[4]);  // Gyr
+  Serial.print(",");
+  Serial.print(xyz_GyrAccMag[5]);
+  Serial.print(",");
+  Serial.print(xyz_GyrAccMag[6]);
+  Serial.print(",");
 
-  Serial.print(" \t T: ");
-  Serial.print(xyz_GyrAccMag[3],2);
-  Serial.print(" C");
-
-  Serial.println("");
+  // Uncomment this to get mag result
+  /*
+  Serial.print(xyz_GyrAccMag[3]);  // Mag
+  Serial.print(",");
+  */
 
   // Filtered
   for (int i = 0; i < 3; i++) {
     angles[i] = (0.98 * (prevAngles[i] + (xyz_GyrAccMag[i + 4] * 0.001))) + (0.02 * xyz_GyrAccMag[i]);
   }
-  Serial.print("Filter: ");
   for (int i = 0; i < 3; i++) {
     Serial.print(angles[i]);
-    Serial.print("\t");
+    Serial.print(",");
   }
-  Serial.println("");
+  Serial.print("\r");
   
   delay(20);
 }
