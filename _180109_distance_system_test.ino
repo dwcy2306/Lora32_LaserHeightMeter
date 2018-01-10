@@ -89,7 +89,7 @@ void setup() {
   }
   
   LaserSen.setTimeout(500);
-  LaserSen.setMeasurementTimingBudget(200000);
+  LaserSen.setMeasurementTimingBudget(200000); //get range value per 200ms
 
   //finish
   u8x8.clear();
