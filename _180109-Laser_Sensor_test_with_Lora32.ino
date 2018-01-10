@@ -65,6 +65,6 @@ void loop() {
     u8x8.clearLine(3);  // delete the text "TIMEOUT" on OLED display if timeout not occured
   }
 
-  Serial.println();
+  Serial.print("\r");
 }
 
