@@ -74,6 +74,7 @@ void setup() {
       break;
   }
   
+  //VL53L0X laser sensor
   u8x8.clear();
   Serial.print("VL53L0X init...")
   u8x8.drawString(0, 0, "VL53L0X init...");
@@ -88,6 +89,7 @@ void setup() {
   }
   
   LaserSen.setTimeout(500);
+  LaserSen.setMeasurementTimingBudget(200000);
 
   //finish
   u8x8.clear();
