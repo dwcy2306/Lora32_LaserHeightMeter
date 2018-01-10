@@ -121,7 +121,7 @@ void loop() {
   }
   for (int i = 0; i < 3; i++) {
     Serial.print(angles[i]);
-    Serial.print((i == 3) ? "" : ",");
+    Serial.print((i == 2) ? "" : ",");
   }
   Serial.print("\r");
   
