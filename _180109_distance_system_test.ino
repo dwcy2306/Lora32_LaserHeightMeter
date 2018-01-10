@@ -1,4 +1,4 @@
-
+// Doesn't have filter
 
 #include <U8x8lib.h>
 #include <LoRa.h>
