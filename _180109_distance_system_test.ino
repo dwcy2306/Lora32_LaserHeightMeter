@@ -76,7 +76,7 @@ void setup() {
   
   //VL53L0X laser sensor
   u8x8.clear();
-  Serial.print("VL53L0X init...")
+  Serial.print("VL53L0X init...");
   u8x8.drawString(0, 0, "VL53L0X init...");
   if(LaserSen.init()){
     Serial.println("success");
@@ -85,7 +85,6 @@ void setup() {
   else {
     Serial.println("fail");
     u8x8.drawString(0, 1, "fail");
-    break;
   }
   
   LaserSen.setTimeout(500);
