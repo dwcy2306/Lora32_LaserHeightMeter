@@ -56,25 +56,23 @@ void setup() {
 }
 
 void loop() {
+  // Serial output: Temp,Pressure,Altitude\r
   sprintf(buf, "%0.2f", bme.readTemperature());
-  Serial.print("Temperature = ");
   Serial.print(buf);
-  Serial.println(" *C");
-  u8x8.drawString(5, 2, buf);
+  Serial.print(",");
+  u8x8.drawString(2, 2, buf);
 
   sprintf(buf, "%f", bme.readPressure());
-  Serial.print("Pressure = ");
   Serial.print(buf);
-  Serial.println(" Pa");
-  u8x8.drawString(5, 3, buf);
+  Serial.print(",");
+  u8x8.drawString(2, 3, buf);
 
   sprintf(buf, "%f", bme.readAltitude(1013.25));
-  Serial.print("Approx altitude = ");
   Serial.print(buf); // this should be adjusted to your local forcase
-  Serial.println(" m");
-  u8x8.drawString(5, 4, buf);
+  Serial.print("\r");
+  u8x8.drawString(2, 4, buf);
   
   Serial.println();
-  delay(2000);
+  delay(200);
 }
 
