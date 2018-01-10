@@ -133,7 +133,7 @@ void loop() {
   u8x8.drawString(7,0,laser_Value);
   u8x8.drawString(13,0," mm");
   
-  Serial.print("Range: ", value, " mm");
+  Serial.print("Range: ", laser_Value, " mm");
   if (sensor.timeoutOccurred()) { Serial.print(" TIMEOUT"); }
   Serial.println();
    
