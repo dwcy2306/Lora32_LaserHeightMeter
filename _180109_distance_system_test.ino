@@ -34,6 +34,7 @@ void setup() {
   while (!Serial); //Wait until the computer connected
   delay(1000);
 
+  //Start LoRa board
   u8x8.begin();
   u8x8.setFont(u8x8_font_artossans8_r);
   u8x8.draw2x2String(1, 3, "PowerOn");
@@ -46,7 +47,7 @@ void setup() {
   }
 
   u8x8.drawString(0, 0, "init...");
-  // Initialize Sensor
+  // Initialize MPU 9250 Sensor
   Serial.print("Probe MPU9250: ");
   switch (mpu9250.initialize())
   {
@@ -102,6 +103,7 @@ void loop() {
   static float xyz_GyrAccMag[9];
   char laser_Value[6];
   
+  //MPU9250 read
   mpu9250.getMeasurement(xyz_GyrAccMag);
 
   Serial.print("XYZ ACC g[");
@@ -126,6 +128,7 @@ void loop() {
 
   Serial.println("");
 
+  //VL53L0X read
   sprintf(laser_Value, "%d", LaserSen.readRangeSingleMillimeters());
   u8x8.clearLine(0);
   u8x8.setFont(u8x8_font_artossans8_r);
