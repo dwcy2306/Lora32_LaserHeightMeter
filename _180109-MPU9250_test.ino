@@ -1,5 +1,3 @@
-
-
 #include <U8x8lib.h>
 #include <LoRa.h>
 #include <Wire.h>
@@ -25,6 +23,7 @@ MPU9250 mpu9250;
 U8X8_SSD1306_128X64_NONAME_SW_I2C u8x8(/* clock=*/ 15, /* data=*/ 4, /* reset=*/ 16);
 
 void setup() {
+  
   SPI.begin(5, 19, 27, 18);
   LoRa.setPins(SS, RST, DI0);
 
@@ -85,7 +84,7 @@ void setup() {
 
   //finish
   u8x8.clear();
-  u8x8.drawString(4, 0, "MPU-9250");
+  u8x8.draw2x2String(0, 3, "MPU-9250");
 }
 
 void loop() {
@@ -93,24 +92,25 @@ void loop() {
 
   mpu9250.getMeasurement(xyz_GyrAccMag);
 
-  Serial.print(xyz_GyrAccMag[0]);  // Acc
-  Serial.print(",");
-  Serial.print(xyz_GyrAccMag[1]);
-  Serial.print(",");
-  Serial.print(xyz_GyrAccMag[2]);
-  Serial.print(",");
+  Serial.print(xyz_GyrAccMag[0] * 250);  // Acc
+  Serial.print(",\t");
+  Serial.print(xyz_GyrAccMag[1] * 250);
+  Serial.print(",\t");
+  Serial.print(xyz_GyrAccMag[2] * 250);
+  Serial.print(",\t");
 
   Serial.print(xyz_GyrAccMag[4]);  // Gyr
-  Serial.print(",");
+  Serial.print(",\t");
   Serial.print(xyz_GyrAccMag[5]);
-  Serial.print(",");
+  Serial.print(",\t");
   Serial.print(xyz_GyrAccMag[6]);
 
   // Uncomment this to get mag result
-  /*
-  Serial.print(",");
+  
+  Serial.print(",\t");
   Serial.print(xyz_GyrAccMag[3]);  // Mag
-  */
+  
   Serial.print("\r");
-  delay(20);
+  Serial.println("");
+  delay(100);
 }
