@@ -377,7 +377,7 @@ void I2CwriteByte(uint8_t Address, uint8_t Register, uint8_t Data)
 int getHeading(int x, int y) {
   float heading;
 
-  // 占쎈쐻占쎈짗占쎌굲占쎈쐻占쎈윥�뵳�뜽苡э옙瑗뤄옙�땫�뜝�럥�쐿 占쎈쐻占쎈윞占쎈쭓占쎈쐻占쎈윪占쎈��:  -8勇싲쨪�삕4' W = -8.067勇싲쨪�삕 W = -0.1408 radian
+  // 대한민국 서울: -8º4' W = -8.067º W = -0.1408 radian
   heading = 180 * (atan2(y, x) - 0.1408) / PI;
   
   if (heading < 0) heading += 360;
