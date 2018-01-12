@@ -132,24 +132,7 @@ void loop() {
   Serial.print(" C");
 
   Serial.println("");
-
-  sprintf(laser_Value, "%d", LaserSen.readRangeSingleMillimeters());
-  u8x8.clearLine(0);
-  u8x8.setFont(u8x8_font_artossans8_r);
-  u8x8.drawString(0,0,"Range: ");
-  u8x8.drawString(7,0,laser_Value);
-  u8x8.drawString(13,0," mm");
-  
-  /*
-  char value[6];
-  sprintf(value, "%d", LaserSen.readRangeSingleMillimeters());
-  u8x8.clearLine(0);
-  u8x8.setFont(u8x8_font_artossans8_r);
-  u8x8.drawString(0,0,"Range: ");
-  u8x8.drawString(7,0,value);
-  u8x8.drawString(13,0," mm");
-  */
-  if((laser_Value = LaserSen.readRangeContinuousMillimeters()) < 2100){
+  if((laser_Value = LaserSen.readRangeSingleMillimeters()) < 2100){
     Serial.print("Range: ");
     Serial.print(laser_Value);
     Serial.print(" mm");
