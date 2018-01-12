@@ -34,7 +34,6 @@ void setup() {
   while (!Serial); //Wait until the computer connected
   delay(1000);
 
-  //Start LoRa board
   u8x8.begin();
   u8x8.setFont(u8x8_font_artossans8_r);
   u8x8.draw2x2String(1, 3, "PowerOn");
@@ -47,7 +46,7 @@ void setup() {
   }
 
   u8x8.drawString(0, 0, "init...");
-  // Initialize MPU 9250 Sensor
+  // Initialize Sensor
   Serial.print("Probe MPU9250: ");
   switch (mpu9250.initialize())
   {
@@ -56,7 +55,7 @@ void setup() {
       u8x8.clear();
       u8x8.drawString(0, 1, "MPU-Sensor");
       u8x8.drawString(0, 2, "missing");
-      while(1);
+      break;
     case 1:
       Serial.println("Found unknown Sensor.");
       u8x8.clear();
@@ -89,6 +88,13 @@ void setup() {
   }
   
   LaserSen.setTimeout(500);
+  
+  // lower the return signal rate limit (default is 0.25 MCPS)
+  LaserSen.setSignalRateLimit(0.1);
+  // increase laser pulse periods (defaults are 14 and 10 PCLKs)
+  LaserSen.setVcselPulsePeriod(VL53L0X::VcselPeriodPreRange, 18);
+  LaserSen.setVcselPulsePeriod(VL53L0X::VcselPeriodFinalRange, 14);
+  
   LaserSen.setMeasurementTimingBudget(200000); //get range value per 200ms
 
   //finish
@@ -101,9 +107,8 @@ void setup() {
 
 void loop() {
   static float xyz_GyrAccMag[9];
-  char laser_Value[6];
+  uint16_t laser_Value;
   
-  //MPU9250 read
   mpu9250.getMeasurement(xyz_GyrAccMag);
 
   Serial.print("XYZ ACC g[");
@@ -128,7 +133,6 @@ void loop() {
 
   Serial.println("");
 
-  //VL53L0X read
   sprintf(laser_Value, "%d", LaserSen.readRangeSingleMillimeters());
   u8x8.clearLine(0);
   u8x8.setFont(u8x8_font_artossans8_r);
@@ -136,11 +140,27 @@ void loop() {
   u8x8.drawString(7,0,laser_Value);
   u8x8.drawString(13,0," mm");
   
-  Serial.print("Range: ");
-  Serial.print(laser_Value);
-  Serial.print(" mm");
-  if (LaserSen.timeoutOccurred()) { Serial.print(" TIMEOUT"); }
-  Serial.println();
+  /*
+  char value[6];
+  sprintf(value, "%d", LaserSen.readRangeSingleMillimeters());
+  u8x8.clearLine(0);
+  u8x8.setFont(u8x8_font_artossans8_r);
+  u8x8.drawString(0,0,"Range: ");
+  u8x8.drawString(7,0,value);
+  u8x8.drawString(13,0," mm");
+  */
+  if((laser_Value = LaserSen.readRangeContinuousMillimeters()) < 2100){
+    Serial.print("Range: ");
+    Serial.print(laser_Value);
+    Serial.print(" mm");
+    if (LaserSen.timeoutOccurred()) { Serial.print(" TIMEOUT"); }
+    Serial.println();
+  }
+  else{
+    Serial.print("Out of range");
+    Serial.println();
+    
+  }
    
   delay(20);
 }
