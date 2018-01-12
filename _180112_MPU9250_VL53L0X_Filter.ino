@@ -5,7 +5,7 @@
 #include <VL53L0X.h>
 #include "i2c.h"
 #include "i2c_MPU9250.h"
-//#include <TimerOne.h>
+#include <Math.h>
 
 MPU9250 mpu9250;
 VL53L0X LaserSen;
@@ -135,10 +135,25 @@ void loop() {
   if((laser_Value = LaserSen.readRangeSingleMillimeters()) < 2100){
     Serial.print(laser_Value);
   } else {
-    Serial.print("Out of range");
+    Serial.print(0);
   }
+  Serial.print("\t");
+
+  Serial.print(calcDistance(laser_Value), 6);
   
   Serial.print("\r\n");
+  delay(200);
+}
+
+float calcDistance(unsigned int rawDist) {
+  float result;
+  float cosX, cosY;
+  cosX = cos(filtered_angle_x * M_PI / 180);
+  cosY = cos(filtered_angle_y * M_PI / 180);
+  
+  result = rawDist * cosX * cosY;
+
+  return result;
 }
 
 void readAccelGyro() {
@@ -166,12 +181,14 @@ void SendDataToProcessing() {
   Serial.print(gyro_angle_z, 2);
   Serial.print(",");
   */
-  Serial.print(filtered_angle_x * 2, 2);  // fil
+  Serial.print(filtered_angle_x, 2);  // fil
   Serial.print("\t");
-  Serial.print(filtered_angle_y * 2, 2);
+  Serial.print(filtered_angle_y, 2);
   Serial.print("\t");
-  Serial.print(filtered_angle_z * 2, 2);
+  /*
+  Serial.print(filtered_angle_z, 2);
   Serial.print("\t");
+  */
 }
 
 void calibAccelGyro() {
@@ -243,10 +260,16 @@ void calcFilteredYPR(){
   tmp_angle_y = filtered_angle_y + gyro_y * dt;
   tmp_angle_z = filtered_angle_z + gyro_z * dt;
 
-  filtered_angle_x = ALPHA * tmp_angle_x + (1.0 - ALPHA) * accel_angle_x;
-  filtered_angle_y = ALPHA * tmp_angle_y + (1.0 - ALPHA) * accel_angle_y;
+  filtered_angle_x = ALPHA * tmp_angle_x + (1.0 - ALPHA) * accel_angle_x * 2;
+  filtered_angle_y = ALPHA * tmp_angle_y + (1.0 - ALPHA) * accel_angle_y * 2;
   filtered_angle_z = tmp_angle_z;
 }
+
+
+
+
+
+
 
 
 
