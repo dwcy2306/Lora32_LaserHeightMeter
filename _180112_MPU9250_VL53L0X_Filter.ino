@@ -142,7 +142,6 @@ void loop() {
   Serial.print(calcDistance(laser_Value), 6);
   
   Serial.print("\r\n");
-  delay(200);
 }
 
 float calcDistance(unsigned int rawDist) {
@@ -253,7 +252,7 @@ void calcGyroYPR(){
 }
 
 void calcFilteredYPR(){
-  const float ALPHA = 0.98;
+  const float ALPHA = 0.96;
   float tmp_angle_x, tmp_angle_y, tmp_angle_z;
 
   tmp_angle_x = filtered_angle_x + gyro_x * dt;
@@ -264,6 +263,9 @@ void calcFilteredYPR(){
   filtered_angle_y = ALPHA * tmp_angle_y + (1.0 - ALPHA) * accel_angle_y * 2;
   filtered_angle_z = tmp_angle_z;
 }
+
+
+
 
 
 
