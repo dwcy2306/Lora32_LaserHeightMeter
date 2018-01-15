@@ -107,13 +107,14 @@ void setup() {
   
   LaserSen.setTimeout(500);
   
+  /*
   // lower the return signal rate limit (default is 0.25 MCPS)
   LaserSen.setSignalRateLimit(0.1);
   // increase laser pulse periods (defaults are 14 and 10 PCLKs)
   LaserSen.setVcselPulsePeriod(VL53L0X::VcselPeriodPreRange, 18);
   LaserSen.setVcselPulsePeriod(VL53L0X::VcselPeriodFinalRange, 14);
-  
-  LaserSen.setMeasurementTimingBudget(33000); //get range value per 200ms
+  */
+  LaserSen.setMeasurementTimingBudget(33000); //get range value per 330ms
 
   //finish
   u8x8.clear();
@@ -263,17 +264,3 @@ void calcFilteredYPR(){
   filtered_angle_y = ALPHA * tmp_angle_y + (1.0 - ALPHA) * accel_angle_y * 2;
   filtered_angle_z = tmp_angle_z;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
