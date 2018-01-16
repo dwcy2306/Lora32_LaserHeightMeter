@@ -5,7 +5,6 @@
 #include <VL53L0X.h>
 #include "i2c.h"
 #include "i2c_MPU9250.h"
-#include <Math.h>
 
 MPU9250 mpu9250;
 VL53L0X LaserSen;
@@ -140,6 +139,7 @@ void loop() {
   Serial.print("\r\n");
 }
 
+
 // This function returns actual distance to ground considering the angle
 float calcDistance(unsigned int rawDist) {
   float result;
@@ -257,11 +257,6 @@ void calcFilteredYPR(){
   filtered_angle_y = ALPHA * tmp_angle_y + (1.0 - ALPHA) * accel_angle_y * 2;
   filtered_angle_z = tmp_angle_z;
 }
-
-
-
-
-
 
 
 
