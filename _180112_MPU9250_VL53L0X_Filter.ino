@@ -34,7 +34,9 @@ float baseAcX, baseAcY, baseAcZ;
 float baseGyX, baseGyY, baseGyZ;
 int16_t AcX, AcY, AcZ, Tmp, GyX, GyY, GyZ;
 
-static float xyz_GyrAccMag[9];  // 0, 1, 2 = Acc, 3 = TMP, 4, 5, 6 = Gyr
+static float xyz_GyrAccMag[9];  // 0, 1, 2 = Acc, 3 = Tmp, 4, 5, 6 = Gyr
+
+
 
 void setup() {
   SPI.begin(5, 19, 27, 18);
@@ -42,13 +44,8 @@ void setup() {
 
   Serial.begin(115200);
   while (!Serial); //Wait until the computer connected
-  delay(1000);
 
   u8x8.begin();
-  u8x8.setFont(u8x8_font_artossans8_r);
-  u8x8.draw2x2String(1, 3, "PowerOn");
-  delay(1000);
-  u8x8.clear();
   u8x8.setFont(u8x8_font_victoriamedium8_r);
   if (!LoRa.begin(BAND)) {
     Serial.println("Starting LoRa failed!");
@@ -59,8 +56,7 @@ void setup() {
   u8x8.drawString(0, 0, "init...");
   // Initialize Sensor
   Serial.print("Probe MPU9250: ");
-  switch (mpu9250.initialize())
-  {
+  switch (mpu9250.initialize()) {
     case 0:
       Serial.println("MPU-Sensor missing");
       u8x8.clear();
@@ -86,12 +82,13 @@ void setup() {
   }
 
   u8x8.clear();
-  u8x8.drawString(0, 0, "Calibrating...");
+  u8x8.drawString(0, 0, "Calibrating...");  // GY-91 Calibration
   calibAccelGyro();
   u8x8.drawString(0, 1, "Complete");
+
   initDT();
 
-  //VL53L0X laser sensor
+  //VL53L0X laser sensor initialization
   u8x8.clear();
   Serial.print("VL53L0X init...");
   u8x8.drawString(0, 0, "VL53L0X init...");
@@ -106,15 +103,8 @@ void setup() {
   }
   
   LaserSen.setTimeout(500);
-  
-  /*
-  // lower the return signal rate limit (default is 0.25 MCPS)
-  LaserSen.setSignalRateLimit(0.1);
-  // increase laser pulse periods (defaults are 14 and 10 PCLKs)
-  LaserSen.setVcselPulsePeriod(VL53L0X::VcselPeriodPreRange, 18);
-  LaserSen.setVcselPulsePeriod(VL53L0X::VcselPeriodFinalRange, 14);
-  */
   LaserSen.setMeasurementTimingBudget(33000); //get range value per 330ms
+                                              //(The longer the time is, the more accurate result)
 
   //finish
   u8x8.clear();
@@ -127,16 +117,17 @@ void loop() {
 
   mpu9250.getMeasurement(xyz_GyrAccMag);
   readAccelGyro();
-  calcDT();
+  calcDT();  // Calculate time per loop  
   calcAccelYPR();
   calcGyroYPR();
   calcFilteredYPR();
-  SendDataToProcessing();
+  SendDataToProcessing();  // Send the data of GY-91 via Serial port
 
-  if((laser_Value = LaserSen.readRangeSingleMillimeters()) < 2100){
+  if((laser_Value = LaserSen.readRangeSingleMillimeters()) < 2100) {
+    // To make sure the value of VL53L0X is in appropriate range
     Serial.print(laser_Value);
   } else {
-    Serial.print(0);
+    Serial.print("OOR");  // Out of range
   }
   Serial.print("\t");
 
@@ -145,14 +136,12 @@ void loop() {
   Serial.print("\r\n");
 }
 
+// This function returns actual distance to ground considering the angle
 float calcDistance(unsigned int rawDist) {
   float result;
-  float cosX, cosY;
-  cosX = cos(filtered_angle_x * M_PI / 180);
-  cosY = cos(filtered_angle_y * M_PI / 180);
   
-  result = rawDist * cosX * cosY;
-
+  result = sqrt((1 - pow(sin(filtered_angle_x * M_PI / 180), 2)) * pow(rawDist, 2) * pow(cos(filtered_angle_y * M_PI / 180), 2));
+  // Multiply M_PI / 180 in order to make degrees to radian
   return result;
 }
 
@@ -240,7 +229,7 @@ void calcAccelYPR(){
 
 float gyro_x, gyro_y, gyro_z;
 
-void calcGyroYPR(){
+void calcGyroYPR() {  // Calculates the actual angle
   const float GYROXYZ_TO_DEGREES_PER_SED = 131;
 
   gyro_x = (GyX - baseGyX) / GYROXYZ_TO_DEGREES_PER_SED;
@@ -253,7 +242,7 @@ void calcGyroYPR(){
 }
 
 void calcFilteredYPR(){
-  const float ALPHA = 0.96;
+  const float ALPHA = 0.94;
   float tmp_angle_x, tmp_angle_y, tmp_angle_z;
 
   tmp_angle_x = filtered_angle_x + gyro_x * dt;
@@ -264,3 +253,21 @@ void calcFilteredYPR(){
   filtered_angle_y = ALPHA * tmp_angle_y + (1.0 - ALPHA) * accel_angle_y * 2;
   filtered_angle_z = tmp_angle_z;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
