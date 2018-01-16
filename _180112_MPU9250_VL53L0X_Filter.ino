@@ -107,7 +107,7 @@ void setup() {
   LaserSen.setVcselPulsePeriod(VL53L0X::VcselPeriodPreRange, 18);
   LaserSen.setVcselPulsePeriod(VL53L0X::VcselPeriodFinalRange, 14);
 
-  LaserSen.setMeasurementTimingBudget(50000); //get range value per 330ms
+  LaserSen.setMeasurementTimingBudget(33000); //get range value per 330ms
                                               //(The longer the time is, the more accurate result)
 
   //finish
@@ -246,7 +246,7 @@ void calcGyroYPR() {  // Calculates the actual angle
 }
 
 void calcFilteredYPR(){
-  const float ALPHA = 0.96;
+  const float ALPHA = 0.92;
   float tmp_angle_x, tmp_angle_y, tmp_angle_z;
 
   tmp_angle_x = filtered_angle_x + gyro_x * dt;
