@@ -36,8 +36,6 @@ int16_t AcX, AcY, AcZ, Tmp, GyX, GyY, GyZ;
 
 static float xyz_GyrAccMag[9];  // 0, 1, 2 = Acc, 3 = Tmp, 4, 5, 6 = Gyr
 
-
-
 void setup() {
   SPI.begin(5, 19, 27, 18);
   LoRa.setPins(SS, RST, DI0);
@@ -91,6 +89,7 @@ void setup() {
   //VL53L0X laser sensor initialization
   u8x8.clear();
   Serial.print("VL53L0X init...");
+  Wire.begin();
   u8x8.drawString(0, 0, "VL53L0X init...");
   if(LaserSen.init()){
     Serial.println("success");
@@ -103,7 +102,12 @@ void setup() {
   }
   
   LaserSen.setTimeout(500);
-  LaserSen.setMeasurementTimingBudget(33000); //get range value per 330ms
+  // Long range mode
+  LaserSen.setSignalRateLimit(0.1);
+  LaserSen.setVcselPulsePeriod(VL53L0X::VcselPeriodPreRange, 18);
+  LaserSen.setVcselPulsePeriod(VL53L0X::VcselPeriodFinalRange, 14);
+
+  LaserSen.setMeasurementTimingBudget(50000); //get range value per 330ms
                                               //(The longer the time is, the more accurate result)
 
   //finish
@@ -122,16 +126,16 @@ void loop() {
   calcGyroYPR();
   calcFilteredYPR();
   SendDataToProcessing();  // Send the data of GY-91 via Serial port
+  
+  laser_Value = LaserSen.readRangeSingleMillimeters();
 
-  if((laser_Value = LaserSen.readRangeSingleMillimeters()) < 2100) {
-    // To make sure the value of VL53L0X is in appropriate range
-    Serial.print(laser_Value);
-  } else {
-    Serial.print("OOR");  // Out of range
+  Serial.print(laser_Value);
+  if (LaserSen.timeoutOccurred()) {
+    Serial.print("TIMEOUT");
   }
   Serial.print("\t");
 
-  Serial.print(calcDistance(laser_Value), 6);
+  Serial.print(calcDistance(laser_Value), 2);
   
   Serial.print("\r\n");
 }
@@ -242,7 +246,7 @@ void calcGyroYPR() {  // Calculates the actual angle
 }
 
 void calcFilteredYPR(){
-  const float ALPHA = 0.94;
+  const float ALPHA = 0.96;
   float tmp_angle_x, tmp_angle_y, tmp_angle_z;
 
   tmp_angle_x = filtered_angle_x + gyro_x * dt;
