@@ -257,35 +257,35 @@ class MPU9255 {
 		static const uint8_t	MPU9250_WIA						=(0x48);
 		static const uint8_t	MPU9250_						=(0x00);
 		
-		int fd;
+		int fd;  // File descriptor of MPU
 
-		float accel_angle_x, accel_angle_y, accel_angle_z;
-		float gyro_angle_x, gyro_angle_y, gyro_angle_z;
-		float filtered_angle_x = 0, filtered_angle_y = 0, filtered_angle_z = 0;
-		float baseAcX, baseAcY, baseAcZ;
-		float baseGyX, baseGyY, baseGyZ;
+		float accel_angle_x, accel_angle_y, accel_angle_z;  // Raw Accel data
+		float gyro_angle_x, gyro_angle_y, gyro_angle_z;  // Raw Gyro data
+		float filtered_angle_x = 0, filtered_angle_y = 0, filtered_angle_z = 0;  // Filtered angle storage
+		float baseAcX, baseAcY, baseAcZ;  // For Calibration
+		float baseGyX, baseGyY, baseGyZ;  // For Calibration
 
 		float xyz_AccTmpGyr[9];	// 0, 1, 2 = Acc, 3 = Tmp, 4, 5, 6 = Gyr
 
-		struct timeval systime;
-		int t_prev, t_now;
-		float dt;
+		struct timeval systime;	//
+		int t_prev, t_now;		//  To calculate elapsed time on loop
+		float dt;				//
 
 		float gyro_x, gyro_y, gyro_z;
 		
-		float ALPHA = 0.96;
+		float ALPHA = 0.96;  // Filter Setting. Big Alpha value means more stability, less accuracy. Set the value with public method: void MPU9255::setAlpha(float val);
 
-		I2CDevice mpu = I2CDevice();
+		I2CDevice mpu = I2CDevice();  // For i2c communication.
 		
 		void mpu9250Reset(void);
-		void setRegister(const uint8_t address, const uint8_t registeraddress, const uint8_t mask, const uint8_t writevalue);
+		void setRegister(const uint8_t address, const uint8_t registeraddress, const uint8_t mask, const uint8_t writevalue);  // Automatically set specific bit.
 		void setBandWidth(const uint16_t hzFreq);
 		void setEnabled(const uint8_t enable);
-		void calibAccelGyro(void);
-		void getMeasurement(void);
-		void calcAccelYPR(void);
-		void calcGyroYPR(void);
-		void calcFilteredYPR(void);
+		void calibAccelGyro(void);  // Calibration. about 1second.
+		void getMeasurement(void);  // Update xyz_AccTmpGyr[9];
+		void calcAccelYPR(void);	// Calc Accel yaw, pitch, roll
+		void calcGyroYPR(void);		// Calc Gyro  ''
+		void calcFilteredYPR(void);	// Calc Filtered  ''
 
 
 	public:

@@ -7,7 +7,7 @@ SET ( CMAKE_VERBOSE_MAKEFILE true )
 
 SET ( OUTPUT_ELF "${CMAKE_PROJECT_NAME}-${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.out" )
 
-SET ( SRC_FILES merge_main.cpp MPU9255.h MPU9255.cpp i2c_device.h i2c_device.cpp laser.h laser.cpp )
+SET ( SRC_FILES distancemeter_main.cpp MPU9255.h MPU9255.cpp i2c_device.h i2c_device.cpp laser.h laser.cpp )
 
 SET ( CMAKE_C_COMPILER "gcc-7.2.0" )
 

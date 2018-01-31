@@ -124,13 +124,13 @@ void MPU9255::calibAccelGyro(void) {
 void MPU9255::getMeasurement(void) {
 	uint8_t _data[14];
 
-	// i2c.read(I2C_ADDRESS, REG_ACCEL_XOUT_H, _data, 14);
 	for (int i = 0; i < 14; i++) {
 		_data[i] = mpu.readReg(REG_ACCEL_XOUT_H + i);
 	}
 
 	xyz_AccTmpGyr[0] = int16_t(_data[0] << 8 | _data[1]);  // Acc
-	xyz_AccTmpGyr[1] = int16_t(_data[2] << 8 | _data[3]); xyz_AccTmpGyr[2] = int16_t(_data[4] << 8 | _data[5]);
+	xyz_AccTmpGyr[1] = int16_t(_data[2] << 8 | _data[3]);
+	xyz_AccTmpGyr[2] = int16_t(_data[4] << 8 | _data[5]);
 
 	xyz_AccTmpGyr[3] = int16_t(_data[6] << 8 | _data[7]);  // Tmp
 
