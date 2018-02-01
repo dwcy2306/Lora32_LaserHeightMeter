@@ -1,6 +1,6 @@
-# Lora32_LaserSensorTest
+# LoRa32_HeightMeter
 
-Some sources for controlling VL53L0X and GY-91(MPU9250 + AK8963)
+Some sources to control VL53L0X and GY-91(MPU9250 + AK8963)
 
 Libraries could be found in Arduino library manager.
 
